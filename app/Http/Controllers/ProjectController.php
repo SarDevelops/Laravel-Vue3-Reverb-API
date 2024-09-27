@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
+    public function getProject(Request $request,$slug)
+    {
+        $project=Project::with('tasks.task_members.members')->where('projects.slug',$slug)->first();
+        return response(['data'=>$project]);
+    }
     public function index(Request $request)
     {
         $query = $request->get('query');
@@ -49,7 +54,6 @@ class ProjectController extends Controller
 
         return response(['message' => 'Project Created Successfully','project'=>$project],200);
     }
-
     public function update(Request $request)
     {
         $rules = [
@@ -73,4 +77,20 @@ class ProjectController extends Controller
             return response()->json(['error' => 'Project not found'], 404);
         }
     }
+    public function pinnedProject(Request $request)
+    {
+        $inputs = $request->all();
+        $errors= Validator::make($inputs,[
+            'projectId'=>'required|numeric',
+        ]);
+        if ($errors->fails()){
+            return response($errors->errors()->all(),422);
+        }
+        TaskProgress::where('projectId',$inputs['projectId'])->update([
+            'pinned_on_dashboard' => TaskProgress::PINNED_ON_DASHBOARD
+        ]);
+        return response(['message'=>'Project Pinned On Dashboard!']);
+    }
+
+
 }
