@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
-    const NOT_STARTED = 1;
-    const  PENDING = 1;
+    const NOT_STARTED = 0;
+    const PENDING = 1;
     const COMPLETED = 2;
-    protected $guarded=[];
+
+    protected $guarded = [];
 
     public function task_members()
     {
@@ -65,7 +66,7 @@ class Task extends Model
     {
         $totalTask = Task::countProjectTask($projectId);
         $totalCompletedTask = Task::countCompletedTask($projectId);
-
+        dd($totalTask ,$totalCompletedTask);
         $progress = Task::aroundNumber(($totalCompletedTask * 100) / $totalTask);
 
         $taskProgress = TaskProgress::where('projectId', $projectId)->first();

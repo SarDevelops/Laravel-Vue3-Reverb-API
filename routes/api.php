@@ -11,6 +11,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::controller(AuthenticationController::class)->group(function(){
+    Route::post('/register','register');
+    Route::post('/login','login');
+});
+
 Route::controller(ProjectController::class)->group(function () {
     Route::post('/register','register');
     Route::post('/login','login');
@@ -22,7 +27,8 @@ Route::controller(ProjectController::class)->group(function () {
     Route::put('/projects', 'update');
     Route::get('/projects', 'index');
     Route::post('/projects/pinned', 'pinnedProject');
-    Route::get('/projects/{slug}', 'getProject');
+    Route::get('/count/projects', 'countProject');
+
 });
 
 //----------------------------------------------------------------------------
